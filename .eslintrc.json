@@ -1,0 +1,32 @@
+{
+	"extends": "next/core-web-vitals",
+	"plugins": ["prettier"],
+	"rules": {
+		"prettier/prettier": [
+			"error",
+			{
+				"printWidth": 100,
+				"arrowParens": "avoid",
+				"semi": false,
+				"singleQuote": true,
+				"jsxSingleQuote": true,
+				"tabWidth": 3,
+				"useTabs": true,
+				"bracketSameLine": false,
+				"trailingComma": "all",
+				"endOfLine": "auto"
+			}
+		],
+		"eol-last": "warn",
+		"quotes": ["error", "single", { "avoidEscape": true }],
+		"jsx-quotes": ["error", "prefer-single"],
+		"no-duplicate-imports": "warn",
+		"semi": ["error", "never"],
+		"object-curly-spacing": ["error", "always"],
+		"array-bracket-spacing": ["error", "never"],
+		"comma-spacing": "error",
+		"no-multiple-empty-lines": ["error", { "max": 1 }],
+		"no-trailing-spaces": "warn",
+		"object-shorthand": ["error", "always"]
+	}
+}

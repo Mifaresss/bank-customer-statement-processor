@@ -1,1 +1,0 @@
-export const apiBaseUrl = 'https://65632a6cee04015769a6dd85.mockapi.io/data/transactions'
