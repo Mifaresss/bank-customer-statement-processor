@@ -20,7 +20,8 @@
 		"papaparse": "^5.4.1",
 		"react": "^18",
 		"react-dom": "^18",
-		"x2js": "^3.4.4"
+		"x2js": "^3.4.4",
+		"zustand": "^4.4.7"
 	},
 	"devDependencies": {
 		"@types/node": "^20",

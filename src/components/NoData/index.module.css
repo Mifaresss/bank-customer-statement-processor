@@ -2,7 +2,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 36.5625rem;
+	height: 100%;
 }
 .noData {
 	font-size: 2rem;

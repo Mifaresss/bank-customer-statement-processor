@@ -1,0 +1,10 @@
+.cell {
+	color: white;
+}
+
+.link {
+	transition: opacity 0.15s ease-in-out;
+}
+.link:hover {
+	opacity: 0.7;
+}

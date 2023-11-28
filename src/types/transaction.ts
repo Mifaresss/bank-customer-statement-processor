@@ -1,4 +1,5 @@
 export interface Transaction {
+	id: string
 	reference: string
 	accountNumber: string
 	description: string

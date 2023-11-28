@@ -7,13 +7,11 @@ import Papa from 'papaparse'
 import X2JS from 'x2js'
 import { csvJsonFromResponse, xmlJsonFromResponse } from '@/utils/processJson'
 import { validateTransactions } from '@/utils/validateTransactions'
-import { Transaction } from '@/types/transaction'
+import { useTransactionsStore } from '@/modules/Main/store'
 
-interface Props {
-	setData: Dispatch<SetStateAction<Transaction[]>>
-}
+export function FileInput() {
+	const setTransactions = useTransactionsStore(state => state.setTransactions)
 
-export function FileInput({ setData }: Props) {
 	const [fileName, setFileName] = useState<any | null>()
 	const [error, setError] = useState(false)
 
@@ -34,7 +32,7 @@ export function FileInput({ setData }: Props) {
 			complete: result => {
 				const fromResponse = result.data.map(csvJsonFromResponse)
 				const failed = validateTransactions(fromResponse)
-				setData(failed)
+				setTransactions(failed)
 			},
 			header: true,
 		})
@@ -48,7 +46,7 @@ export function FileInput({ setData }: Props) {
 			const result: any = parser.xml2js(text as string)
 			const fromResponse = result.records.record.map(xmlJsonFromResponse)
 			const failed = validateTransactions(fromResponse)
-			setData(failed)
+			setTransactions(failed)
 		}
 	}
 

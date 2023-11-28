@@ -2,14 +2,11 @@ import { Transaction } from '@/types/transaction'
 
 export function validateTransactions(data: Transaction[]): Transaction[] {
 	const referenceSet = new Set<string>()
-	const duplicatedReferenceTransactions: Transaction[] = []
-	const failedBalanceTransactions: Transaction[] = []
-
-	console.log('data:', data)
+	const failedTransactions: Transaction[] = []
 
 	data.forEach(transaction => {
 		if (referenceSet.has(transaction.reference)) {
-			duplicatedReferenceTransactions.push(transaction)
+			failedTransactions.push(transaction)
 		} else {
 			referenceSet.add(transaction.reference)
 		}
@@ -20,9 +17,9 @@ export function validateTransactions(data: Transaction[]): Transaction[] {
 		const endBalance = parseFloat(transaction.endBalance)
 
 		if (expectedEndBalance !== endBalance) {
-			failedBalanceTransactions.push(transaction)
+			failedTransactions.push(transaction)
 		}
 	})
 
-	return [...duplicatedReferenceTransactions, ...failedBalanceTransactions]
+	return failedTransactions
 }

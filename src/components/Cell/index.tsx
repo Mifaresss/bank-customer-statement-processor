@@ -1,7 +1,8 @@
 'use client'
 import s from './index.module.css'
-import { ReactNode } from 'react'
 import { TableCell } from '@mui/material'
+import Link from 'next/link'
+import { ReactNode } from 'react'
 
 interface Props {
 	children: ReactNode
@@ -9,7 +10,7 @@ interface Props {
 
 export function Cell({ children }: Props) {
 	return (
-		<TableCell style={{ color: 'white' }} align='left'>
+		<TableCell className={s.cell} align='left'>
 			{children}
 		</TableCell>
 	)
