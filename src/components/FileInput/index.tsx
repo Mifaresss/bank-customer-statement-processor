@@ -13,13 +13,13 @@ export function FileInput() {
 	const setTransactions = useTransactionsStore(state => state.setTransactions)
 
 	const [fileName, setFileName] = useState<any | null>()
-	const [error, setError] = useState('')
+	const [errors, setErrors] = useState<string[]>([])
 	const [isSuccess, setIsSuccess] = useState(false)
 
 	const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target?.files?.[0]
 		if (file?.type !== 'text/csv' && file?.type !== 'text/xml') {
-			setError('File format is not valid')
+			setErrors(['File format is not valid'])
 			setTransactions([])
 			return
 		}
@@ -34,7 +34,11 @@ export function FileInput() {
 		Papa.parse(file, {
 			complete: result => {
 				if (result.errors.length) {
-					setError('File is not valid')
+					// console.log('error parsing csv in complete', result.errors)
+					const errors = result.errors.splice(0, 5).map((e: any) => e.message)
+					const filteredErrors = Array.from(new Set(errors))
+					// console.log('filteredErrors', filteredErrors)
+					setErrors(filteredErrors)
 					setTransactions([])
 					return
 				}
@@ -57,9 +61,14 @@ export function FileInput() {
 			const parser = new X2JS()
 			const result: any = parser.xml2js(text as string)
 
-			if (result.records?.parsererror) {
-				setError('File is not valid')
+			const error = result.records?.parsererror
+			if (error) {
+				setErrors([error.div.__text])
 				setTransactions([])
+				return
+			}
+			if (!result.records?.record) {
+				setErrors(['Records not found'])
 				return
 			}
 
@@ -88,29 +97,45 @@ export function FileInput() {
 				</Button>
 				{fileName && <span className={s.file}>{fileName}</span>}
 			</div>
-			{!!error && (
-				<Snackbar
-					open={!!error}
-					autoHideDuration={3000}
-					onClose={() => {
-						setError('')
+			{errors.length ? (
+				<div
+					style={{
+						position: 'absolute',
+						left: 0,
+						bottom: 0,
+						display: 'flex',
+						flexDirection: 'column',
+						gap: '8px',
+						padding: 20,
 					}}
 				>
-					<Alert
-						onClose={() => {
-							setError('')
-						}}
-						severity='error'
-						sx={{ width: '100%' }}
-					>
-						{error}
-					</Alert>
-				</Snackbar>
-			)}
+					{errors.map((e, i) => (
+						<Snackbar
+							style={{ position: 'static' }}
+							key={i}
+							open={!!errors}
+							autoHideDuration={6000}
+							onClose={() => {
+								setErrors([])
+							}}
+						>
+							<Alert
+								onClose={() => {
+									setErrors([])
+								}}
+								severity='error'
+								sx={{ width: '100%' }}
+							>
+								{e}
+							</Alert>
+						</Snackbar>
+					))}
+				</div>
+			) : null}
 			{isSuccess && (
 				<Snackbar
 					open={isSuccess}
-					autoHideDuration={3000}
+					autoHideDuration={5000}
 					onClose={() => {
 						setIsSuccess(false)
 					}}
