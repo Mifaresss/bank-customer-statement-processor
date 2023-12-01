@@ -9,6 +9,8 @@
 	margin: 0 auto;
 	border: 2px solid var(--yellow);
 	border-radius: 0.5rem;
+	max-height: 60vh;
+	overflow-y: auto;
 }
 
 .tableTitle {

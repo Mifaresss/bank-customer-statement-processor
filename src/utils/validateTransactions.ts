@@ -11,12 +11,12 @@ export function validateTransactions(data: Transaction[]): Transaction[] {
 			referenceSet.add(transaction.reference)
 		}
 
-		const startBalance = parseFloat(transaction.startBalance)
-		const mutation = parseFloat(transaction.mutation)
+		const startBalance = +transaction.startBalance
+		const mutation = +transaction.mutation
 		const expectedEndBalance = startBalance + mutation
-		const endBalance = parseFloat(transaction.endBalance)
+		const endBalance = +transaction.endBalance
 
-		if (expectedEndBalance !== endBalance) {
+		if (parseFloat(expectedEndBalance.toFixed(2)) !== endBalance) {
 			failedTransactions.push(transaction)
 		}
 	})

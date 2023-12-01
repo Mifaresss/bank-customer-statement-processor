@@ -13,15 +13,19 @@ export function FileInput() {
 	const setTransactions = useTransactionsStore(state => state.setTransactions)
 
 	const [fileName, setFileName] = useState<any | null>()
-	const [error, setError] = useState(false)
+	const [error, setError] = useState('')
+	const [isSuccess, setIsSuccess] = useState(false)
 
 	const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target?.files?.[0]
+		console.log('event:', event)
 		if (file?.type !== 'text/csv' && file?.type !== 'text/xml') {
-			setError(true)
+			setError('File format is not valid')
+			setTransactions([])
 			return
 		}
 
+		// setFile(file)
 		setFileName(file.name)
 		if (file.type === 'text/csv') parseCSV(file)
 		if (file.type === 'text/xml') parseXML(file)
@@ -30,9 +34,18 @@ export function FileInput() {
 	const parseCSV = (file: any) => {
 		Papa.parse(file, {
 			complete: result => {
+				if (result.errors.length) {
+					setError('File is not valid')
+					setTransactions([])
+					return
+				}
 				const fromResponse = result.data.map(csvJsonFromResponse)
 				const failed = validateTransactions(fromResponse)
+				if (failed.length === 0) setIsSuccess(true)
 				setTransactions(failed)
+			},
+			error: err => {
+				console.log('error parsing csv', err)
 			},
 			header: true,
 		})
@@ -44,6 +57,13 @@ export function FileInput() {
 			const text = reader.result
 			const parser = new X2JS()
 			const result: any = parser.xml2js(text as string)
+
+			if (result.records?.parsererror) {
+				setError('File is not valid')
+				setTransactions([])
+				return
+			}
+
 			const fromResponse = result.records.record.map(xmlJsonFromResponse)
 			const failed = validateTransactions(fromResponse)
 			setTransactions(failed)
@@ -69,22 +89,41 @@ export function FileInput() {
 				</Button>
 				{fileName && <span className={s.file}>{fileName}</span>}
 			</div>
-			{error && (
+			{!!error && (
 				<Snackbar
-					open={error}
+					open={!!error}
 					autoHideDuration={3000}
 					onClose={() => {
-						setError(false)
+						setError('')
 					}}
 				>
 					<Alert
 						onClose={() => {
-							setError(false)
+							setError('')
 						}}
 						severity='error'
 						sx={{ width: '100%' }}
 					>
-						File format is not valid
+						{error}
+					</Alert>
+				</Snackbar>
+			)}
+			{isSuccess && (
+				<Snackbar
+					open={isSuccess}
+					autoHideDuration={3000}
+					onClose={() => {
+						setIsSuccess(false)
+					}}
+				>
+					<Alert
+						onClose={() => {
+							setIsSuccess(false)
+						}}
+						severity='success'
+						sx={{ width: '100%' }}
+					>
+						All transactions are valid!
 					</Alert>
 				</Snackbar>
 			)}
