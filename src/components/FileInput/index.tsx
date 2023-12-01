@@ -18,7 +18,6 @@ export function FileInput() {
 
 	const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
 		const file = event.target?.files?.[0]
-		console.log('event:', event)
 		if (file?.type !== 'text/csv' && file?.type !== 'text/xml') {
 			setError('File format is not valid')
 			setTransactions([])
